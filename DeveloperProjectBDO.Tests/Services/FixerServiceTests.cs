@@ -7,7 +7,7 @@ using Moq;
 using Moq.Protected;
 using Xunit;
 
-namespace DeveloperProjectBDO.Tests
+namespace DeveloperProjectBDO.Tests.Services
 {
     public class FixerServiceTests
     {
@@ -37,8 +37,8 @@ namespace DeveloperProjectBDO.Tests
             // Assert
             Assert.NotNull(exchangeRates);
             Assert.Equal("EUR", exchangeRates.BaseCurrency);
-            Assert.Equal(1.2m, exchangeRates.Rates["USD"]);
-            Assert.Equal(0.9m, exchangeRates.Rates["GBP"]);
+            Assert.Contains(exchangeRates.Rates, r => r.Currency == "USD" && r.Rate == 1.2m);
+            Assert.Contains(exchangeRates.Rates, r => r.Currency == "GBP" && r.Rate == 0.9m);
 
             // Verify the HTTP request was made once
             mockHttpMessageHandler.Protected().Verify(
@@ -113,6 +113,30 @@ namespace DeveloperProjectBDO.Tests
                 Times.Once(),
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>());
+        }
+        
+        [Fact]
+        public void GetCrossRate_ShouldReturnCorrectCrossRate()
+        {
+            // Arrange
+            var exchangeRate = new ExchangeRate
+            {
+                BaseCurrency = "EUR",
+                Rates = new List<ExchangeRateEntry>
+                {
+                    new ExchangeRateEntry { Currency = "USD", Rate = 1.2m },
+                    new ExchangeRateEntry { Currency = "GBP", Rate = 0.9m }
+                }
+            };
+
+            var fixerService = new FixerService();
+
+            // Act
+            var crossRate = fixerService.GetCrossRate("GBP", "USD", exchangeRate);
+
+            // Assert
+            Assert.NotNull(crossRate);
+            Assert.Equal(1.3333m, Math.Round(crossRate.Value, 4));
         }
     }
 }
