@@ -114,7 +114,7 @@ namespace DeveloperProjectBDO.Tests.Services
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>());
         }
-        
+
         [Fact]
         public void GetCrossRate_ShouldReturnCorrectCrossRate()
         {
@@ -129,7 +129,9 @@ namespace DeveloperProjectBDO.Tests.Services
                 }
             };
 
-            var fixerService = new FixerService();
+            // Since the constructor requiring an API key is not being used here, we need to mock it correctly.
+            var httpClient = new HttpClient();
+            var fixerService = new FixerService(httpClient, "dummy_api_key");
 
             // Act
             var crossRate = fixerService.GetCrossRate("GBP", "USD", exchangeRate);

@@ -13,14 +13,13 @@ namespace DeveloperProjectBDO.Application
 
         public ExchangeRateApp(DbContextOptions<ExchangeRateContext> dbContextOptions, FixerService fixerService, ExchangeRateRepository exchangeRateRepository)
         {
-            _dbContextOptions = dbContextOptions;
-            _fixerService = fixerService;
-            _exchangeRateRepository = exchangeRateRepository;
+            _dbContextOptions = dbContextOptions ?? throw new ArgumentNullException(nameof(dbContextOptions));
+            _fixerService = fixerService ?? throw new ArgumentNullException(nameof(fixerService));
+            _exchangeRateRepository = exchangeRateRepository ?? throw new ArgumentNullException(nameof(exchangeRateRepository));
         }
 
         public async Task Run()
         {
-            // Schedule daily task to fetch exchange rates
             var cancellationTokenSource = new CancellationTokenSource();
             _ = Task.Run(() => ScheduleDailyTask(FetchExchangeRates, TimeSpan.FromDays(1), cancellationTokenSource.Token));
 
@@ -88,9 +87,10 @@ namespace DeveloperProjectBDO.Application
 
         private async Task GetLatestExchangeRates()
         {
-            var exchangeRates = await Task.Run(() => _exchangeRateRepository.GetExchangeRate());
+            var exchangeRates = await _fixerService.GetLatestExchangeRatesAsync();
             if (exchangeRates != null)
             {
+                _exchangeRateRepository.AddOrUpdate(exchangeRates);
                 Console.WriteLine($"Base Currency: {exchangeRates.BaseCurrency}");
                 foreach (var rate in exchangeRates.Rates)
                 {
@@ -99,7 +99,7 @@ namespace DeveloperProjectBDO.Application
             }
             else
             {
-                Console.WriteLine("No exchange rates available.");
+                Console.WriteLine("Failed to fetch exchange rates.");
             }
         }
 

@@ -14,7 +14,10 @@ namespace DeveloperProjectBDO.Services
             _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey), "API key must not be null");
         }
 
-        public FixerService() : this(new HttpClient(), Environment.GetEnvironmentVariable("FIXER_API_KEY") ?? throw new InvalidOperationException("API key is not set in environment variables"))
+        public FixerService() : this(
+            new HttpClient(),
+            Environment.GetEnvironmentVariable("FIXER_API_KEY") ?? 
+            throw new InvalidOperationException("API key is not set in environment variables"))
         {
         }
 
@@ -24,11 +27,12 @@ namespace DeveloperProjectBDO.Services
             try
             {
                 var response = await _httpClient.GetStringAsync(url);
+                Console.WriteLine($"API Response: {response}"); // Add this line for debugging
                 var fixerResponse = JsonConvert.DeserializeObject<FixerApiResponse>(response);
 
                 if (fixerResponse?.Success == true)
                 {
-                    return new ExchangeRate
+                    var exchangeRate = new ExchangeRate
                     {
                         BaseCurrency = fixerResponse.Base,
                         Rates = fixerResponse.Rates.Select(rate => new ExchangeRateEntry
@@ -37,6 +41,8 @@ namespace DeveloperProjectBDO.Services
                             Rate = rate.Value
                         }).ToList()
                     };
+                    Console.WriteLine($"Fetched Exchange Rates: BaseCurrency: {exchangeRate.BaseCurrency}, Rates: {string.Join(", ", exchangeRate.Rates.Select(r => $"{r.Currency}: {r.Rate}"))}");
+                    return exchangeRate;
                 }
             }
             catch (HttpRequestException ex)
@@ -73,10 +79,9 @@ namespace DeveloperProjectBDO.Services
                 Console.WriteLine($"The target currency '{toCurrency}' was not found.");
                 return null;
             }
-
+            
             return toRate.Value / fromRate.Value;
         }
-
     }
 
     public class FixerApiResponse
