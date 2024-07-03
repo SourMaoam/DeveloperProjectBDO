@@ -27,7 +27,6 @@ namespace DeveloperProjectBDO.Services
             try
             {
                 var response = await _httpClient.GetStringAsync(url);
-                Console.WriteLine($"API Response: {response}"); // Add this line for debugging
                 var fixerResponse = JsonConvert.DeserializeObject<FixerApiResponse>(response);
 
                 if (fixerResponse?.Success == true)
@@ -41,7 +40,6 @@ namespace DeveloperProjectBDO.Services
                             Rate = rate.Value
                         }).ToList()
                     };
-                    Console.WriteLine($"Fetched Exchange Rates: BaseCurrency: {exchangeRate.BaseCurrency}, Rates: {string.Join(", ", exchangeRate.Rates.Select(r => $"{r.Currency}: {r.Rate}"))}");
                     return exchangeRate;
                 }
             }
