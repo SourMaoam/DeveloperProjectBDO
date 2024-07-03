@@ -1,0 +1,8 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=833f1fe2_002Df103_002D4233_002Db981_002Df45d42a662af/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="FixerServiceTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::06F4EE3A-21B6-4F05-9FAA-D3AE4EC44BB2::net8.0::DeveloperTaskBDO.Tests.FixerServiceTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::06F4EE3A-21B6-4F05-9FAA-D3AE4EC44BB2::net8.0::DeveloperProjectBDO.Tests.ExchangeRateRepositoryTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::06F4EE3A-21B6-4F05-9FAA-D3AE4EC44BB2::net8.0::DeveloperProjectBDO.Tests.FixerServiceTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
